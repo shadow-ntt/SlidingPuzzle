@@ -3,9 +3,9 @@ using UnityEngine;
 using Game;
 public class GameBoard : MonoBehaviour
 {
-    [SerializeField] private Transform Piece;
-    [SerializeField] private float gap;
-    private List<Transform> Pieces = new List<Transform>();
+    [SerializeField] public Transform Piece;
+    [SerializeField] public float gap;
+    public List<Transform> Pieces = new List<Transform>();
     private GameManager gameManager;
     private int posEmpty;
     private float widthPiece;
@@ -45,7 +45,7 @@ public class GameBoard : MonoBehaviour
     void Update()
     {
         //bắt sự kiện click chuột
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !gameManager.isPause)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
