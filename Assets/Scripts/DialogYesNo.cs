@@ -15,7 +15,6 @@ public class DialogYesNo : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("created");
         btnYes.onClick.AddListener(OnYes);
         btnNo.onClick.AddListener(OnNo);
         Instance = this;

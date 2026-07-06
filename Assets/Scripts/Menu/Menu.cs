@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+//class kiểu interface, mà lười quá để v :)))
 public class Menu : MonoBehaviour
 {
     //[SerializeField] public Button ButtonPrefab;

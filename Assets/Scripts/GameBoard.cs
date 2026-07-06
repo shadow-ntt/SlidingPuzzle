@@ -22,14 +22,16 @@ public class GameBoard : MonoBehaviour
     }
     void Start()
     {
-
+        //lấy vùng view camera, do chạy luôn nên phải tính luôn
         widthPiece = (float)1 / row;
         heightPiece = (float)1 / col;
+        //board chạy -1 -> 1
         float hBoard = widthPiece * row * transform.localScale.x * 2 + gap * (row - 1);
         float wBoard = heightPiece * col * transform.localScale.y * 2 + gap * (col - 1);
+        //margin 2 bên 0.75/2, dưới 0.25/2
         var offset = new Vector2(0.25f + 0.5f + wBoard, 0.25f + hBoard);
+        //vùng camera nhìn thấy (board)
         var gameCamera = Camera.main.GetComponent<GameCamera>();
-        //vùng camera nhìn thấy từ đáy của Block tới đỉnh bảng chơi, margin=0.75
         gameCamera.View(
             new Rect(
                 -offset.x / 2,
@@ -55,7 +57,6 @@ public class GameBoard : MonoBehaviour
                 {
                     if (this.Pieces[i].position == hit.transform.position)
                     {
-                        Debug.Log(gameManager.durationPlaying);
                         //trên, dưới không cần check, nên để col để luôn đúng
                         //dưới
                         if (SwapIfValid(i, col, col))
@@ -99,10 +100,12 @@ public class GameBoard : MonoBehaviour
             {
                 Transform piece = Instantiate(Piece, transform);
                 this.Pieces.Add(piece);
-                //render từ dưới lên trên
+                //render từ dưới lên trên, chạy -1 -> 1 (muốn để nó vô trung tâm luôn)
                 piece.transform.localPosition = new Vector3(-1 + 2 * (c + 0.5f) * heightPiece * aspect, -1 + 2 * (r + 0.5f) * widthPiece);
                 piece.transform.localScale = new Vector3(heightPiece * 2 * aspect - gap, widthPiece * 2 - gap, 1);
+                // lưu tên để dùng cho phần check completed
                 piece.name = $"{col * r + c}";
+                //piece rỗng, không hiển thị
                 if (r == row - 1 && c == col - 1)
                 {
                     piece.gameObject.SetActive(false);
@@ -126,7 +129,9 @@ public class GameBoard : MonoBehaviour
         if (this.posEmpty == posSwap && index % col != colCheck && index < row * col && index > -1)
         {
             //đổi cả index và vị trí
+            // mới chỉ đổi vị trí trong list, (điểu kiền hoàn thành là trong list phải đúng thứ tự)
             (this.Pieces[index], this.Pieces[posEmpty]) = (this.Pieces[posEmpty], this.Pieces[index]);
+            // đổi vị trí trong board
             (this.Pieces[index].localPosition, this.Pieces[posEmpty].localPosition) = (this.Pieces[posEmpty].localPosition, this.Pieces[index].localPosition);
             posEmpty = index;
             return true;
@@ -136,6 +141,7 @@ public class GameBoard : MonoBehaviour
 
     public bool isComplete()
     {
+        //check tất cả phải đúng thứ tự (khớp với name)
         for (int i = 0; i < this.Pieces.Count; i++)
         {
             if (!this.Pieces[i].transform.name.Equals($"{i}"))
@@ -150,7 +156,9 @@ public class GameBoard : MonoBehaviour
         int count = 0;
         while (count != countShuffle)
         {
+            //4 vị trí có thể hoán đổi
             int[] offset = { posEmpty - 1, posEmpty + 1, posEmpty - col, posEmpty + col };
+            //UnityEngine với C# bình thường khác nhau thì phải
             int rdOffset = offset[UnityEngine.Random.Range(0, offset.Length)];
             if (SwapIfValid(rdOffset, col, col)) continue;//dưới
             if (SwapIfValid(rdOffset, -col, col)) continue;//trên
@@ -159,28 +167,14 @@ public class GameBoard : MonoBehaviour
             count++;
         }
     }
+    //xóa hết đi để tạo lại cái mới
     public void clearAllPiece()
     {
+        //xóa tất cả
         foreach (var piece in this.Pieces)
         {
             Destroy(piece.gameObject);
             this.Pieces = new List<Transform>();
         }
     }
-    // public IEnumerator Shuffle(int countShuffle, int waitSecond)
-    // {
-    //     yield return new WaitForSeconds(waitSecond);
-    //     int count = 0;
-    //     while (count != countShuffle)
-    //     {
-    //         int[] offset = { posEmpty - 1, posEmpty + 1, posEmpty - col, posEmpty + col };
-    //         int rdOffset = offset[UnityEngine.Random.Range(0, offset.Length)];
-    //         if (SwapIfValid(rdOffset, col, col)) continue;//dưới
-    //         if (SwapIfValid(rdOffset, -col, col)) continue;//trên
-    //         if (SwapIfValid(rdOffset, 1, col - 1)) continue;//phải
-    //         if (SwapIfValid(rdOffset, -1, 0)) continue;//trái
-    //         count++;
-    //     }
-    //     shuffling = false;
-    // }
 }

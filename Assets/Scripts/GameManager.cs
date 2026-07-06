@@ -33,16 +33,15 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        //completed
+        //completed, thêm cái shuffling vì chả may đang shuffle nó lại đúng
         if (GameBoard.isComplete() && !shuffling)
         {
             CompletedBoard.Instance.Show(durationPlaying.ToString("0.00"), moved.ToString("0.00"));
         }
         pauseManager();
-        //
+        //set text cho score
         movedText.text = moved.ToString("0.00");
         durationText.text = durationPlaying.ToString("0.00");
-        //game complete
 
     }
     void pauseManager()
@@ -52,6 +51,7 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1;
             durationPlaying += Time.deltaTime;
         }
+        //menuPoup đang active thì = pausegame, còn cái sau check game completed thì cũng phải pause lại
         if (menuPoup.gameObject.activeSelf || (GameBoard.isComplete() && !shuffling))
         {
             isPause = true;
@@ -81,7 +81,6 @@ public class GameManager : MonoBehaviour
     {
 
         GameBoard.Piece.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = sprt.texture;
-
         StartShuffle();
     }
 }

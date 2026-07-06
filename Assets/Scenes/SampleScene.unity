@@ -2770,6 +2770,7 @@ MonoBehaviour:
   contentPanelTransform: {fileID: 1447921106}
   VLG: {fileID: 1447921107}
   BtnSelectImgPrefab: {fileID: 6555364581337006183, guid: 8d92f202d58fe614a8b49cc568f38398, type: 3}
+  scrollRect: {fileID: 965528861}
   ItemList: []
   SlideImgSprite: []
 --- !u!1 &988488460

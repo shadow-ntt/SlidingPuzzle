@@ -22,6 +22,7 @@ public class MenuPoup : MonoBehaviour
     }
     public void PushMenu(Menu menu)
     {
+        //thêm vào thì ẩn cái hiện tại đi, cái mới vào thì bật lên
         if (Menus.Count >= 1)
         {
             Menu menuCurrent = (Menu)this.Menus.Peek();
@@ -32,8 +33,10 @@ public class MenuPoup : MonoBehaviour
     }
     public void PopMenu()
     {
+        //ẩn cái hiện tại đi, bật cái trước đó lên
         Menu menuPop = (Menu)this.Menus.Pop();
         menuPop.gameObject.SetActive(false);
+        //nếu không còn cái nào thì tắt cái popup này đi
         if (Menus.Count <= 0)
         {
             gameObject.SetActive(false);
