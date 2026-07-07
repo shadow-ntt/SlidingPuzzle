@@ -69,6 +69,7 @@ public class SelectImgMenu : MonoBehaviour
         //tạo scroll vô hạn
         int lengthItem = ItemList.Count;
         float itemH = ItemList[0].GetComponent<RectTransform>().rect.height;
+        //số item có thể chứa trong view port(tât nhiên là item có cả spacing nữa)
         int ItemsToAdd = Mathf.CeilToInt(viewPortTransform.rect.height / (itemH + VLG.spacing));
         //thêm item vào đằng sau
         for (int i = 0; i < ItemsToAdd; i++)
