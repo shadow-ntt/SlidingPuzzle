@@ -33,24 +33,27 @@ public class SelectImgMenu : MonoBehaviour
             isUpdated = false;
         }
         //lấy giá trị chiều cao của các item, không bao gồm các item clone(khởi tạo thêm)
-        //có thể bỏ qua 1 giá trị spacing vì nó cũng không đáng kể
-        float itemH = ItemList[0].GetComponent<RectTransform>().rect.width;
-        float contentH = ItemList.Count * (itemH + VLG.spacing);
+        float itemH = ItemList[0].GetComponent<RectTransform>().rect.height;
+        float cycleH = ItemList.Count * (itemH + VLG.spacing);
+        //tọa độ scroll ở trung tâm
+        //chiều cao tối đa có thể cuộn= chiều cao màn hình/ 2 - VlG.spacing(trường hợp thấy phần tử cuối cùng nhưng ko cuộn dc) + tọa độ cao nhất của ListItem(ko phải clone)
+        float containerH = viewPortTransform.rect.height / 2 - VLG.spacing + (cycleH - VLG.spacing) / 2f;
+        Debug.Log(containerH);
         //lấy vị trí hiện tại trừ hoặc cộng thì tương tự quay lại 1 vòng
         //ví dụ nếu đang ở 5 h=3 thì 5-3=2, sẽ quay lại đúng phần tử đang đứng
         //lớn hơn 0 thì set lại vị trí nhỏ hơn
-        if (contentPanelTransform.localPosition.y > 0)
+        if (contentPanelTransform.localPosition.y > 0 + containerH)
         {
             Canvas.ForceUpdateCanvases();
-            contentPanelTransform.localPosition -= new Vector3(0, contentH, 0);
+            contentPanelTransform.localPosition -= new Vector3(0, cycleH, 0);
             OldVelocity = scrollRect.velocity;
             isUpdated = true;
         }
-        // nhỏ hơn contentH / 2 thì set vị trí lớn hơn
-        if (contentPanelTransform.localPosition.y < 0 - contentH / 2)
+        // nhỏ hơn cycleH / 2(view thấy hiện tại là clone có vị trí cao nhất) thì set vị trí lớn hơn
+        if (contentPanelTransform.localPosition.y < 0 - containerH)
         {
             Canvas.ForceUpdateCanvases();
-            contentPanelTransform.localPosition += new Vector3(0, contentH, 0);
+            contentPanelTransform.localPosition += new Vector3(0, cycleH, 0);
             OldVelocity = scrollRect.velocity;
             isUpdated = true;
         }
@@ -63,10 +66,10 @@ public class SelectImgMenu : MonoBehaviour
         {
             ItemList.Add(createButton(item));
         }
-        //tạo scroll vô hạn(đang hoàn thiện)
+        //tạo scroll vô hạn
         int lengthItem = ItemList.Count;
-        float itemH = ItemList[0].GetComponent<RectTransform>().rect.width;
-        int ItemsToAdd = Mathf.CeilToInt(viewPortTransform.rect.width / (itemH + VLG.spacing));
+        float itemH = ItemList[0].GetComponent<RectTransform>().rect.height;
+        int ItemsToAdd = Mathf.CeilToInt(viewPortTransform.rect.height / (itemH + VLG.spacing));
         //thêm item vào đằng sau
         for (int i = 0; i < ItemsToAdd; i++)
         {
@@ -83,6 +86,8 @@ public class SelectImgMenu : MonoBehaviour
             RectTransform RT = Btn.GetComponent<RectTransform>();
             RT.SetAsFirstSibling();
         }
+        contentPanelTransform.localPosition = new Vector3((0 - itemH + VLG.spacing) * ItemsToAdd, contentPanelTransform.localPosition.y, contentPanelTransform.localPosition.z
+);
     }
     Button createButton(Sprite sprt)
     {
